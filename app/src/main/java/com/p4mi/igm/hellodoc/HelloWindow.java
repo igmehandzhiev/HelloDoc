@@ -26,8 +26,9 @@ public class HelloWindow extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private ValueEventListener userSignedListener;
-    private FirebaseDatabase database;
-    private DatabaseReference myRef;
+    private static FirebaseDatabase database;
+    private static DatabaseReference myRef;
+    private static String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,8 @@ public class HelloWindow extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if (currentUser != null) {
+                    SignIn.setUserID(currentUser.getUid());
+                    SignIn.setUsername(currentUser.getDisplayName());
                     Account account = null;
                     if (dataSnapshot.child("users").child("doctor").hasChild(currentUser.getUid())) {
                         account = dataSnapshot.child("users").child("doctor").child(currentUser.getUid()).getValue(Account.class);
@@ -49,7 +52,7 @@ public class HelloWindow extends AppCompatActivity {
                         Toast.makeText(context, "Not such an user", Toast.LENGTH_SHORT);
                     }
                     if (account.getType().equals("doctor")) {
-                        Intent intent = new Intent(context, Calendar.class);
+                        Intent intent = new Intent(context, Schedule.class);
                         startActivity(intent);
                     } else if (account.getType().equals("patient")) {
                         Intent intent = new Intent(context, MainMenu.class);
@@ -84,5 +87,13 @@ public class HelloWindow extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 //        firebaseAuth.removeAuthStateListener(mAuthListener);
+    }
+
+    public static FirebaseDatabase getDatabase() {
+        return database;
+    }
+
+    public static DatabaseReference getMyRef() {
+        return myRef;
     }
 }

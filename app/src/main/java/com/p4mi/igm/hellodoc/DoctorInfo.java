@@ -21,6 +21,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+
 
 public class DoctorInfo extends AppCompatActivity implements View.OnClickListener {
 
@@ -67,6 +69,7 @@ public class DoctorInfo extends AppCompatActivity implements View.OnClickListene
         switch (v.getId()) {
             case R.id.update_info:
                 updateInfo();
+                break;
 
         }
     }
@@ -74,6 +77,19 @@ public class DoctorInfo extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    private void updateWorkingHours() {
+        ArrayList<String> hoursSetUp = new ArrayList<>();
+        int size = 24;
+        for (int i = 0; i < size; ++i) {
+            StringBuilder hour = new StringBuilder();
+            hour.append(i);
+            hour.append(" - ");
+            hour.append(i + 1);
+            hoursSetUp.add(i, hour.toString());
+        }
+        account.setWorkingHours(new WorkingHours(hoursSetUp));
     }
 
 
@@ -97,8 +113,9 @@ public class DoctorInfo extends AppCompatActivity implements View.OnClickListene
         final EditText description = (EditText) findViewById(R.id.description);
         account.setDescription(description.getText().toString());
 
+        updateWorkingHours();
         myRef.child("users").child("doctor").child(user.getUid()).setValue(account);
-        Intent intent = new Intent(this, Calendar.class);
+        Intent intent = new Intent(this, Schedule.class);
         startActivity(intent);
     }
 }

@@ -1,4 +1,4 @@
-package com.p4mi.igm.hellodoc;
+package com.example.quickstart;
 
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.p4mi.igm.hellodoc.R;
 
 public class NearMe extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, OnMapReadyCallback, GoogleMap.InfoWindowAdapter {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -43,7 +44,7 @@ public class NearMe extends AppCompatActivity implements GoogleApiClient.OnConne
     private GoogleMap mMap;
     private Location mLastKnownLocation;
     private CameraPosition mCameraPosition;
-    private LatLng mDefaultLocation;
+    private LatLng mDefaultLocation = new LatLng(42.647342, 23.343297);
     private String[] mLikelyPlaceNames;
     private String[] mLikelyPlaceAddresses;
     private String[] mLikelyPlaceAttributions;
@@ -120,7 +121,7 @@ public class NearMe extends AppCompatActivity implements GoogleApiClient.OnConne
             mLocationPermissionGranted = true;
             Log.d(TAG, "TEST.GRANTED");
         } else {
-            Log.d(TAG, "TEST.NOT");
+            Log.d(TAG, "TEST.NOT_GRANTED");
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
@@ -167,7 +168,7 @@ public class NearMe extends AppCompatActivity implements GoogleApiClient.OnConne
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.current_place_menu, menu);
         Log.d(TAG, "TEST.onCreateOptionsMenu");
@@ -274,7 +275,7 @@ public class NearMe extends AppCompatActivity implements GoogleApiClient.OnConne
 
     private void openPlacesDialog() {
         // Ask the user to choose the place where they are now.
-        Log.d(TAG,"TEST.OpenPlacesDialog");
+        Log.d(TAG, "TEST.OpenPlacesDialog");
         DialogInterface.OnClickListener listener =
                 new DialogInterface.OnClickListener() {
                     @Override

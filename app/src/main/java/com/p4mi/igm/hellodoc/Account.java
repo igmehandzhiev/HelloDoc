@@ -19,6 +19,9 @@ class Account {
     private String description;
 
 
+    private WorkingHours workingHours = new WorkingHours();
+
+
     public Account() {
     }
 
@@ -27,6 +30,7 @@ class Account {
         this.setEmail(email);
         this.setType(type);
         this.setUserID(userID);
+        setWorkingHours(workingHours);
     }
 
     public String getName() {
@@ -108,5 +112,13 @@ class Account {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public WorkingHours getWorkingHours() {
+        return workingHours;
+    }
+
+    public void setWorkingHours(WorkingHours workingHours) {
+        this.workingHours = workingHours;
     }
 }

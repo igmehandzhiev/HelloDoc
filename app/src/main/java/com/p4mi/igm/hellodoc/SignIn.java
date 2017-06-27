@@ -3,8 +3,9 @@ package com.p4mi.igm.hellodoc;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -28,12 +29,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 public class SignIn extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
@@ -48,6 +45,9 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
     private Context context = this;
     private DatabaseReference myRef;
     private FirebaseDatabase database;
+    private static String username;
+
+    private static String userID;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +77,8 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
     @Override
     public void onStart() {
         super.onStart();
+
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -85,11 +87,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
         switch (v.getId()) {
             case R.id.sign_in_button:
                 signIn();
-                break;
-            case R.id.logo:
-                final Context context = this;
-                Intent intent = new Intent(context, MapsActivity.class);
-                startActivity(intent);
                 break;
             case R.id.type_doctor:
                 PatientType.setBackgroundColor(0x000000);
@@ -130,13 +127,19 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
             if (result.isSuccess()) {
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
-                if (userType.equals("doctor")) {
-                    Intent intent = new Intent(context, DoctorInfo.class);
-                    startActivity(intent);
-                } else if (userType.equals("patient")) {
-                    Intent intent = new Intent(context, MainMenu.class);
-                    startActivity(intent);
-                }
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        // yourMethod();
+                        if (userType.equals("doctor")) {
+                            Intent intent = new Intent(context, DoctorInfo.class);
+                            startActivity(intent);
+                        } else if (userType.equals("patient")) {
+                            Intent intent = new Intent(context, MainMenu.class);
+                            startActivity(intent);
+                        }
+                    }
+                }, 2000);
             }
         }
     }
@@ -151,7 +154,11 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithCredential:success");
+                            Toast.makeText(SignIn.this, "Authentication successful.", Toast.LENGTH_SHORT)
+                                    .show();
                             FirebaseUser user = firebaseAuth.getCurrentUser();
+                            setUserID(user.getUid());
+                            setUsername(user.getDisplayName());
                             createUser(user);
                         } else {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -186,6 +193,22 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener, G
 
     protected void typePatient() {
         userType = "patient";
+    }
+
+    public static String getUserID() {
+        return userID;
+    }
+
+    public static void setUserID(String currentUserID) {
+        userID = currentUserID;
+    }
+
+    public static String getUsername() {
+        return username;
+    }
+
+    public static void setUsername(String currentUsername) {
+        username = currentUsername;
     }
 
     @Override

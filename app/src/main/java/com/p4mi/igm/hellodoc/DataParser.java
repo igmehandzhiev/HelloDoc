@@ -60,6 +60,7 @@ public class DataParser {
         String latitude = "";
         String longitude = "";
         String reference = "";
+        String isOpen = "";
 
         Log.d("getPlace", "Entered");
 
@@ -70,6 +71,9 @@ public class DataParser {
             if (!googlePlaceJson.isNull("vicinity")) {
                 vicinity = googlePlaceJson.getString("vicinity");
             }
+            if (!googlePlaceJson.isNull("opening_hours")) {
+                isOpen = googlePlaceJson.getJSONObject("opening_hours").getString("open_now");
+            }
             latitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lat");
             longitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lng");
             reference = googlePlaceJson.getString("reference");
@@ -78,6 +82,7 @@ public class DataParser {
             googlePlaceMap.put("lat", latitude);
             googlePlaceMap.put("lng", longitude);
             googlePlaceMap.put("reference", reference);
+            googlePlaceMap.put("is_open", isOpen);
             Log.d("getPlace", "Putting Places");
         } catch (JSONException e) {
             Log.d("getPlace", "Error");
